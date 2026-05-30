@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { invalidateLineCredentialsCache } from "@/lib/line/settings";
 
 export const runtime = "nodejs";
 
@@ -53,6 +54,7 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    invalidateLineCredentialsCache();
     return NextResponse.json({ ok: true, settings: data });
   }
 
@@ -63,5 +65,6 @@ export async function PUT(req: NextRequest) {
     .select()
     .single();
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  invalidateLineCredentialsCache();
   return NextResponse.json({ ok: true, settings: data });
 }

@@ -7,10 +7,22 @@ export interface LineCredentials {
 }
 
 /**
- * Load LINE credentials, preferring the DB-managed row so the merchant can
- * rotate them via the admin UI. Falls back to env so dev still works.
+ * In-memory cache of LINE credentials. On Vercel Fluid Compute the same
+ * function instance can handle many requests, so this dramatically reduces
+ * average webhook latency (skip Supabase round-trip on hot path).
+ * TTL is short so admin edits propagate within ~30 s.
  */
+const TTL_MS = 30_000;
+let _cache: { creds: LineCredentials; expires: number } | null = null;
+
+export function invalidateLineCredentialsCache() {
+  _cache = null;
+}
+
 export async function getLineCredentials(): Promise<LineCredentials | null> {
+  const now = Date.now();
+  if (_cache && now < _cache.expires) return _cache.creds;
+
   const supabase = createSupabaseAdminClient();
   const { data } = await supabase
     .from("line_settings")
@@ -25,9 +37,11 @@ export async function getLineCredentials(): Promise<LineCredentials | null> {
 
   if (!channelAccessToken || !channelSecret) return null;
 
-  return {
+  const creds: LineCredentials = {
     channelAccessToken,
     channelSecret,
     isActive: data?.is_active ?? true,
   };
+  _cache = { creds, expires: now + TTL_MS };
+  return creds;
 }
