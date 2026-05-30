@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+/*
+ * มองดึก KC — CI palette
+ *   #8B1A23  deep red   (primary)
+ *   #F5E6A8  cream      (secondary)
+ *   #5BB8E8  sky blue   (accent)
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FFF8E7;
+  --foreground: #2A1416;
+
+  --card: #FFFFFF;
+  --card-foreground: #2A1416;
+
+  --muted: #FBF1D2;
+  --muted-foreground: #6B4A4D;
+
+  --primary: #8B1A23;
+  --primary-foreground: #FFF8E7;
+
+  --secondary: #F5E6A8;
+  --secondary-foreground: #5A3D1A;
+
+  --accent: #5BB8E8;
+  --accent-foreground: #0B3B52;
+
+  --success: #4FB286;
+  --warning: #E8B35B;
+  --destructive: #B23A3A;
+
+  --border: #EFE0BC;
+  --input: #FBF1D2;
+  --ring: #8B1A23;
+
+  --radius: 1.25rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-sarabun), "Sarabun", system-ui, sans-serif;
+  --font-display: var(--font-mali), var(--font-sarabun), system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 0.5rem);
+  --radius-md: calc(var(--radius) - 0.25rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.5rem);
+  --radius-2xl: calc(var(--radius) + 1rem);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss02";
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Cute decorative dotted background */
+.bg-dotted {
+  background-image: radial-gradient(circle, rgba(139, 26, 35, 0.08) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Soft fade-in animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.94); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.35s ease-out;
 }
